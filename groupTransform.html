@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>Group Transform</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+	<button onclick="rotateScene(10)">rotate</button>
+	<button onclick="scaleScene(4)">rotate</button>
+	<div id='container'></div>
+		<script src="js/three.js"></script>
+		<script src="js/jquery.js"></script>
+		<script>
+		var WIDTH = window.innerWidth,
+			  HEIGHT = window.innerHeight;
+			  var scene, camera, renderer;
+			  var currentTime = Date.now();
+			  var duration = 5000;//ms
+			  var cubeGroup,sphereGroup;
+		function animate() {
+			var now =Date.now();
+			var deltat = now - currentTime;
+			currentTime = now;
+			var fract = deltat / duration;
+			var angle = Math.PI * 2 * fract;
+
+			// Roatete cube about the y axis
+			cube.rotation.y +=angle;
+
+			//Rotate sphere about its Y Axis
+			sphereGroup.rotation.y -= angle/2;
+
+			//Rotate cone about X axis
+			cone.rotation.x+=angle;
+
+			requestAnimationFrame( animate );
+			renderer.render( scene, camera );
+		}
+
+		function createScene(canvas) {
+			renderer= new THREE.WebGLRenderer({ antialias:true});
+
+			renderer.setSize(WIDTH, HEIGHT);
+
+			scene= new THREE.Scene();
+
+			camera =new THREE.PerspectiveCamera(45, WIDTH/HEIGHT,1,4000);
+			camera.position.z=10;
+			scene.add(camera);
+
+			canvas.append(renderer.domElement);
+
+			// creating group to hold all the objects
+			cubeGroup = new THREE.Object3D;
+
+			//Add bidirectional light to show off the objects
+			var light = new THREE.DirectionalLight(0xffffff, 1.5);
+			light.position.set(.5,.2,.1);
+			cubeGroup.add(light);
+
+			// For Cube
+			var mapUrl = "images/wallpaper_6.jpg";
+			var map = THREE.ImageUtils.loadTexture(mapUrl);
+			var material= new THREE.MeshPhongMaterial({map:map});
+
+			//Cube geometry
+			var cube_geometry= new THREE.CubeGeometry(2,2,2);
+			cube= new THREE.Mesh(cube_geometry,material);
+
+			//tilting mesh towads the veiwer
+			cube.rotation.x= Math.PI/5;
+			cube.rotation.y=Math.PI/5;
+
+			//Add the cube mesh to our group
+			cubeGroup.add(cube);
+
+			//Create a new group for sphere
+			sphereGroup = new THREE.Object3D;
+			cubeGroup.add(sphereGroup);
+
+			sphereGroup.position.set(0,3,-4);
+			//set up a sphere 
+			var radius= 1, segments= 10, rings=20;
+
+			//create a new mesh with sphere geometry
+			var sphere_Geometry= new THREE.SphereGeometry(radius,segments,rings);
+			var sphere= new THREE.Mesh(sphere_Geometry, material);
+			//sphere.position.z=-500
+			//add sphere to the scene
+			sphereGroup.add(sphere);
+			// Create the cone geometry
+			geometry = new THREE.CylinderGeometry(0, .333, .444, 20, 5);
+			// And put the geometry and material together into a mesh
+			cone = new THREE.Mesh(geometry, material);
+			// Move the cone up and out from the sphere
+			cone.position.set(1, 1, -.667);
+			// Add the cone mesh to our group
+			sphereGroup.add( cone );
+			// Now add the group to our scene
+			scene.add( cubeGroup );
+			animate();
+		}
+
+		function rotateScene(deltax) {
+			cubeGroup.rotation.y +=deltax/100;
+			$("#rotation").html("rotation: 0," + cubeGroup.rotation.y.toFixed(2) + ",0");
+		}
+		function scaleScene(scale) {
+			cubeGroup.scale.set(scale,scale,scale);
+			$("#scale").html("scale: " + scale);
+		}
+		$(document).ready(function(){
+			var canvas=$('#container');
+			createScene(canvas);
+		});
+		</script>
+	</body>
+	</head>
+</html>

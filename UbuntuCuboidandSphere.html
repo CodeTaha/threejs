@@ -26,10 +26,9 @@
 			// get the DOM element to attach to
 			// - assume we've got jQuery to hand
 			var $container = $('#container');
-
 			// create a WebGL renderer, camera
 			// and a scene
-			var renderer = new THREE.WebGLRenderer();
+			var renderer = new THREE.WebGLRenderer({ antialias: true } );
 			renderer.setSize( WIDTH,HEIGHT);
 			var camera =
 			  new THREE.PerspectiveCamera(
@@ -48,6 +47,8 @@
 			var map = THREE.ImageUtils.loadTexture(mapUrl);
 			var cube_material = new THREE.MeshLambertMaterial( { map:map } );//Phong Lambert Basic
 			var cube = new THREE.Mesh( cube_geometry, cube_material, false );
+			cube.position.x=-45
+			cube.position.z=-400
 			scene.add( cube );
 
 			// add the camera to the scene
@@ -55,7 +56,7 @@
 
 			// the camera starts at 0,0,0
 			// so pull it back
-			camera.position.z = 300;
+			//camera.position.z = 300;
 
 			// attach the render-supplied DOM element
 			$container.append(renderer.domElement);
@@ -67,7 +68,7 @@
 			var sphere_Geometry= new THREE.SphereGeometry(radius,segments,rings);
 			var sphere_Material= new THREE.MeshLambertMaterial({map:map});
 			var sphere= new THREE.Mesh(sphere_Geometry, sphere_Material);
-
+			sphere.position.z=-500
 			//add sphere to the scene
 			scene.add(sphere);
 
@@ -76,7 +77,7 @@
 			  new THREE.PointLight(0xFFFFFF);
 
 			// set its position
-			pointLight.position.x = 30;
+			pointLight.position.x = 150;
 			pointLight.position.y = 50;
 			pointLight.position.z = 140;
 
