@@ -44,7 +44,7 @@
 			var cube_geometry = new THREE.BoxGeometry( 50, 22, 35 );
 			// Create a texture-mapped cube and add it to the scene
 			// First, create the texture map
-			var mapUrl = "/images/wallpaper_6.jpg";
+			var mapUrl = "images/wallpaper_6.jpg";
 			var map = THREE.ImageUtils.loadTexture(mapUrl);
 			var cube_material = new THREE.MeshLambertMaterial( { map:map } );//Phong Lambert Basic
 			var cube = new THREE.Mesh( cube_geometry, cube_material, false );
