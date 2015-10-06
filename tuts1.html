@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>My first Three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+	<div id='container'></div>
+		<script src="js/three.js"></script>
+		<script src="js/jquery.js"></script>
+		<script>
+			// set the scene size
+			var WIDTH = window.innerWidth,
+			  HEIGHT = window.innerHeight;
+
+			// set some camera attributes
+			var VIEW_ANGLE = 45,
+			  ASPECT = WIDTH / HEIGHT,
+			  NEAR = 0.1,
+			  FAR = 10000;
+
+			// get the DOM element to attach to
+			// - assume we've got jQuery to hand
+			var $container = $('#container');
+
+			// create a WebGL renderer, camera
+			// and a scene
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( WIDTH,HEIGHT);
+			var camera =
+			  new THREE.PerspectiveCamera(
+			    VIEW_ANGLE,
+			    ASPECT,
+			    NEAR,
+			    FAR);
+
+			var scene = new THREE.Scene();
+
+			// Create Cube
+			var cube_geometry = new THREE.BoxGeometry( 50, 22, 35 );
+			// Create a texture-mapped cube and add it to the scene
+			// First, create the texture map
+			var mapUrl = "/images/wallpaper_6.jpg";
+			var map = THREE.ImageUtils.loadTexture(mapUrl);
+			var cube_material = new THREE.MeshLambertMaterial( { map:map } );//Phong Lambert Basic
+			var cube = new THREE.Mesh( cube_geometry, cube_material, false );
+			scene.add( cube );
+			// add the camera to the scene
+			scene.add(camera);
+
+			// the camera starts at 0,0,0
+			// so pull it back
+			camera.position.z = 300;
+
+			// attach the render-supplied DOM element
+			$container.append(renderer.domElement);
+
+			//set up a sphere 
+			var radius= 50, segments= 10, rings=200;
+
+			//create a new mesh with sphere geometry
+			var sphere_Geometry= new THREE.SphereGeometry(radius,segments,rings);
+			var sphere_Material= new THREE.MeshLambertMaterial({map:map});
+			var sphere= new THREE.Mesh(sphere_Geometry, sphere_Material);
+
+			//add sphere to the scene
+			scene.add(sphere);
+
+			// create a point light
+			var pointLight =
+			  new THREE.PointLight(0xFFFFFF);
+
+			// set its position
+			pointLight.position.x = 30;
+			pointLight.position.y = 50;
+			pointLight.position.z = 140;
+
+			// add to the scene
+			scene.add(pointLight);
+			// draw!
+			var count=0;
+			function render() {
+				cube.rotation.x += 0.01;
+				//cube.rotation.y += 0.01;
+				cube.rotation.z -= 0.01;
+				if(count<150)
+				{
+					sphere.position.x+=1;
+					count++;	
+				} else {
+					sphere.rotation.y-=0.01;
+					//count--;
+				}
+				
+				requestAnimationFrame( render );
+				renderer.render( scene, camera );
+			}
+			render();
+		</script>
+	</body>
+</html>
